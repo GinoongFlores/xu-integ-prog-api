@@ -181,16 +181,14 @@ fetch("http://localhost:5000/api/users", {
 
 - What you’ll do:
   - Finalize your project topic (e.g., Campus Lost & Found API).
-  - Write a short proposal: problem, users, features, and data you will store.
-  - Draft API documentation outline in OpenAPI/Swagger (endpoints list + fields only).
+  - Copy the template `ITCC14 Final Project Doc` and use it for Project Proposal 
+  - Draft API documentation outline in OpenAPI/Swagger or Postman (endpoints list + fields only).
 - Deliverables:
   - README section: Problem statement, goals, basic data model.
-  - `api_documentation.yaml` skeleton with paths and schemas (no server required).
+  - `ITCC14 Final Project Doc` 
 - Checklist:
-  - [ ] Problem defined
-  - [ ] Users identified
-  - [ ] Initial endpoints listed
-  - [ ] Data fields identified
+  - [ ] Chapter 1
+  - [ ] Chapter 2
 
 ### Milestone 2 (Nov Week 2): Half API + Half Documentation + Git/GitHub
 
@@ -203,7 +201,9 @@ fetch("http://localhost:5000/api/users", {
   - Running local server with at least create/list working.
   - Updated `api_documentation.yaml` with examples and parameters.
   - GitHub repo link (README points to it).
+  - Continue the chapter 3 of `ITCC14 Final Project Doc` 
 - Checklist:
+  - [ ] Chapter 3 Of the Project document 
   - [ ] Repo created + initial commit
   - [ ] Env + dependencies installed
   - [ ] Create/list endpoints work
