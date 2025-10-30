@@ -12,8 +12,7 @@ Top Picks (Beginner-Friendly):
 
 **Tutorials:**
 
-- [Flask SQLAlchemy Tutorial - Building a CRUD API with Python Flask](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
-- [Python Flask Tutorial: Full-Featured Web App - SQLAlchemy Database](https://www.youtube.com/watch?v=MwZwr5Tvyxo)
+- [Python REST API Tutorial for Beginners | How to Build a Flask REST API](https://www.youtube.com/watch?v=z3YMz-Gocmw&t)
 
 2. Node.js + Express.js
    - Language: JavaScript
