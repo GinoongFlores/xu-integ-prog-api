@@ -1,0 +1,496 @@
+openapi: 3.0.3
+info:
+  title: Campus Lost & Found API
+  version: 1.0.0
+  description: |
+    REST API for reporting, listing, and claiming lost-and-found items on campus.
+    Backed by Flask + SQLite. Endpoints for lost, found, and claims.
+servers:
+  - url: http://localhost:5000
+    description: Local development
+  - url: https://YOUR_NGROK_SUBDOMAIN.ngrok.io
+    description: ngrok tunnel (replace before use)
+tags:
+  - name: Lost
+  - name: Found
+  - name: Claims
+
+paths:
+  /api/lost:
+    get:
+      tags: [Lost]
+      summary: List lost items
+      parameters:
+        - $ref: "#/components/parameters/CategoryQuery"
+        - $ref: "#/components/parameters/DateFromQuery"
+        - $ref: "#/components/parameters/DateToQuery"
+        - $ref: "#/components/parameters/SearchQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/PageSizeQuery"
+      responses:
+        "200":
+          description: A list of lost items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  total:
+                    type: integer
+    post:
+      tags: [Lost]
+      summary: Create a lost item report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemCreateLost"
+            examples:
+              example:
+                value:
+                  title: Blue ID card
+                  description: Lost near library
+                  category: id
+                  location: Main Library
+                  date: 2025-10-28
+                  reporterName: Ana
+                  reporterContact: 0917xxxxxxx
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /api/lost/{id}:
+    get:
+      tags: [Lost]
+      summary: Get a lost item by id
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "200":
+          description: Item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Lost]
+      summary: Update a lost item or mark as found
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemUpdateLost"
+            examples:
+              markFound:
+                value:
+                  status: found
+                  location: Security Office
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/found:
+    get:
+      tags: [Found]
+      summary: List found items
+      parameters:
+        - $ref: "#/components/parameters/CategoryQuery"
+        - $ref: "#/components/parameters/DateFromQuery"
+        - $ref: "#/components/parameters/DateToQuery"
+        - $ref: "#/components/parameters/SearchQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/PageSizeQuery"
+      responses:
+        "200":
+          description: A list of found items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  total:
+                    type: integer
+    post:
+      tags: [Found]
+      summary: Report a found item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemCreateFound"
+            examples:
+              example:
+                value:
+                  title: Black umbrella
+                  description: Left in Room 204
+                  category: umbrella
+                  location: Room 204
+                  date: 2025-10-28
+                  reporterName: Mark
+                  reporterContact: 0998xxxxxxx
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /api/found/{id}:
+    get:
+      tags: [Found]
+      summary: Get a found item by id
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      responses:
+        "200":
+          description: Item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Found]
+      summary: Update a found item (or mark as claimed)
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemUpdateFound"
+            examples:
+              markClaimed:
+                value:
+                  status: claimed
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/claims:
+    get:
+      tags: [Claims]
+      summary: List claimed items
+      parameters:
+        - $ref: "#/components/parameters/CategoryQuery"
+        - $ref: "#/components/parameters/DateFromQuery"
+        - $ref: "#/components/parameters/DateToQuery"
+        - $ref: "#/components/parameters/SearchQuery"
+        - $ref: "#/components/parameters/PageQuery"
+        - $ref: "#/components/parameters/PageSizeQuery"
+      responses:
+        "200":
+          description: A list of claimed items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  page:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  total:
+                    type: integer
+
+  /api/claims/{id}:
+    post:
+      tags: [Claims]
+      summary: Claim an item by id
+      parameters:
+        - $ref: "#/components/parameters/IdPath"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClaimRequest"
+            examples:
+              example:
+                value:
+                  claimerName: Jane Doe
+                  claimerContact: 0917xxxxxxx
+      responses:
+        "200":
+          description: Item claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Numeric item identifier
+    CategoryQuery:
+      name: category
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Category"
+    DateFromQuery:
+      name: dateFrom
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+      description: Inclusive start date (YYYY-MM-DD)
+    DateToQuery:
+      name: dateTo
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+      description: Inclusive end date (YYYY-MM-DD)
+    SearchQuery:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Free text search in title/description/location
+    PageQuery:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSizeQuery:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            example:
+              value:
+                message: Validation failed
+                details:
+                  - field: title
+                    issue: Required
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            example:
+              value:
+                message: Item not found
+
+  schemas:
+    Category:
+      type: string
+      enum: [id, umbrella, gadget, bag, other]
+    Status:
+      type: string
+      enum: [lost, found, claimed]
+    Item:
+      type: object
+      required: [id, title, description, category, location, date, status]
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        location:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          $ref: "#/components/schemas/Status"
+        reporterName:
+          type: string
+          nullable: true
+        reporterContact:
+          type: string
+          nullable: true
+        claimerName:
+          type: string
+          nullable: true
+        claimerContact:
+          type: string
+          nullable: true
+        claimedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ItemBase:
+      type: object
+      required: [title, description, category, location, date]
+      properties:
+        title:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        location:
+          type: string
+          maxLength: 120
+        date:
+          type: string
+          format: date
+        reporterName:
+          type: string
+        reporterContact:
+          type: string
+    ItemCreateLost:
+      allOf:
+        - $ref: "#/components/schemas/ItemBase"
+      description: New lost item (status defaults to lost)
+    ItemCreateFound:
+      allOf:
+        - $ref: "#/components/schemas/ItemBase"
+      description: New found item (status defaults to found)
+    ItemUpdateLost:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        location:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [lost, found]
+      additionalProperties: false
+    ItemUpdateFound:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        location:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [found, claimed]
+      additionalProperties: false
+    ClaimRequest:
+      type: object
+      required: [claimerName]
+      properties:
+        claimerName:
+          type: string
+        claimerContact:
+          type: string
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              issue:
+                type: string
