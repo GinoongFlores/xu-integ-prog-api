@@ -25,7 +25,7 @@
 - **What we'll do:**
   - Initialize repo, set up virtualenv, install Flask/SQLite (or chosen stack).
   - Build core endpoints (create/list) for 1–2 resources.
-  - Flesh out OpenAPI docs with request/response schemas and examples.
+  - Read out OpenAPI docs with request/response schemas and examples and start to create initial documentation on SwaggerUI.
   - Use Git properly (feature branches, meaningful commits) and push to GitHub.
 - **Deliverables:**
   - Running local server with at least create/list working.
@@ -37,7 +37,7 @@
   - [ ] Repo created + initial commit
   - [ ] Env + dependencies installed
   - [ ] Create/list endpoints work
-  - [ ] OpenAPI updated with examples
+  - [ ] Updated SwaggerUI documentation with examples
   - [ ] GitHub pushed
 
 ### Milestone 3 (Nov Week 3): Full Backend API
